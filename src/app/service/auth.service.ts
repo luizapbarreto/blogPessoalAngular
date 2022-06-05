@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment.prod';
 import { Usuario } from '../model/Usuario';
 import { UsuarioLogin } from '../model/UsuarioLogin';
 
@@ -12,12 +13,22 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   logar(usuarioLogin: UsuarioLogin): Observable<UsuarioLogin> {
-    return this.http.post<UsuarioLogin>('http://localhost:8080/usuarios/entrar', usuarioLogin)
+    return this.http.post<UsuarioLogin>('http://localhost:8080/usuarios/logar', usuarioLogin)
    }
 
  cadastrar(usuario: Usuario): Observable<Usuario> {
   return this.http.post<Usuario>('http://localhost:8080/usuarios/cadastrar', usuario)
  }
 
+ logado(){
+   let ok: boolean = false
+
+   if(environment.token != '') {
+     ok = true
+   }
+
+   return ok
+ }
   // acessar um endereço externo e utilizar algum metodo HTTP
+
 }

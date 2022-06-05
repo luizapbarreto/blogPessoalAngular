@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { env } from 'process';
 import { environment } from 'src/environments/environment.prod';
 import { UsuarioLogin } from '../model/UsuarioLogin';
 import { AuthService } from '../service/auth.service';
@@ -24,18 +23,22 @@ export class EntrarComponent implements OnInit {
   }
 
   entrar(){
-    this.auth.logar(this.usuarioLogin).subscribe((resp: UsuarioLogin)=>{
-      this.usuarioLogin = resp
+    this.auth.logar(this.usuarioLogin).subscribe({
+      next: (resp: UsuarioLogin)=>{
+        this.usuarioLogin = resp
+        environment.nome = this.usuarioLogin.nome
+        environment.id = this.usuarioLogin.id
+        environment.foto = this.usuarioLogin.foto
+        environment.token = this.usuarioLogin.token
+        environment.tipo = this.usuarioLogin.tipo
 
-      environment.token = this.usuarioLogin.token
-      environment.nome = this.usuarioLogin.nome
-      environment.foto = this.usuarioLogin.foto
-      environment.id = this.usuarioLogin.id
+        this.router.navigate(['/inicio'])
 
-      this.router.navigate(['/inicio'])
-    }, erro => {
-      if(erro.status  == 500) {
-        alert('Usuario ou senha estão incorretos')
+      },
+      error: erro =>{
+        if(erro.status==401){
+          alert('Usuario ou senha inválidos.')
+        }
       }
     })
   }
